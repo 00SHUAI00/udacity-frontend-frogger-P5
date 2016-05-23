@@ -1,19 +1,24 @@
+'use strict';
+
 /* Variables */
-// array of possible Y positions for enemy to start at 
-var positions = [100, 200, 300];
+
+// create global variable of an empty object for environment variables
+var env = env || {};
+
+// array of possible Y positions for enemy to start at
+env.positions = [100, 200, 300];
 
 // array of possible winning sayings
-var winners = ["No boys for you!", "Cat lady 4 life!", "You're Commitment is to your career!"];
+env.winners = ["No boys for you!", "Cat lady 4 life!", "You're Commitment is to your career!"];
 
 // array of possible losing sayings
-var losers = ["Kiss me my fool", "You're getting Married!", "Smooooooch"];
+env.losers = ["Kiss me my fool", "You're getting Married!", "Smooooooch"];
 
 // initialize  total wins
-var totalWins = 0;
+env.totalWins = 0;
 
 // initialize  total losses
-var totalLosses = 0;
-
+env.totalLosses = 0;
 
 // Setting up enemy speed and X,Y positions
 var Enemy = function() {
@@ -32,7 +37,7 @@ Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
-// Update enemies position 
+// Update enemies position
 Enemy.prototype.update = function(dt) {
     this.x += this.enemyspeed * dt;
     // reset enemy when they leave the screen
@@ -44,7 +49,7 @@ Enemy.prototype.update = function(dt) {
 // Reset enemy after it leaves the screen
 Enemy.prototype.reset = function() {
     this.x = -100;
-    this.y = positions[Math.floor(Math.random() * 3)];
+    this.y = env.positions[Math.floor(Math.random() * 3)];
     this.enemyspeed = Math.floor((Math.random() * 400) + 100);
 };
 
@@ -79,7 +84,7 @@ Player.prototype.handleInput = function(event) {
         this.reset();
     }
     if (this.y > 400) {
-        player.youWin();
+        this.youWin();
         this.reset();
     }
     if (this.x < 0 || this.x > 400) {
@@ -97,8 +102,8 @@ Player.prototype.collide = function() {
     var current = this;
     allEnemies.forEach(function(enemy) {
         if (enemy.y == current.y) {
-            if (enemy.x >= player.x - 20 && enemy.x <= player.x + 20) {
-                player.youLose();
+            if (enemy.x >= current.x - 20 && enemy.x <= current.x + 20) {
+                current.youLose();
                 current.reset();
             }
         }
@@ -107,15 +112,15 @@ Player.prototype.collide = function() {
 
 // prints loser statement and increments total losses variable
 Player.prototype.youLose = function() {
-    totalLosses++;
-    loser = "FAIL! " + losers[Math.floor(Math.random() * 3)] + " " + "(" + totalWins + "W" + "/" + totalLosses + "L" + ")";
+    env.totalLosses++;
+    var loser = "FAIL! " + env.losers[Math.floor(Math.random() * 3)] + " " + "(" + env.totalWins + "W" + "/" + env.totalLosses + "L" + ")";
     ctx.fillStyle = "white";
     ctx.fillRect(0, 0, 500, 500);
     ctx.fillStyle = "black";
     ctx.font = "15pt sans-serif";
     ctx.fillText(loser, 10, 35);
-    // player loses game if total losses is greather than 10 and game resets 
-    if (totalLosses > 15) {
+    // player loses game if total losses is greather than 10 and game resets
+    if (env.totalLosses > 15) {
         alert("You Lose!");
         location.reload();
     }
@@ -123,28 +128,27 @@ Player.prototype.youLose = function() {
 
 // prints winner statement and increments total wins variable
 Player.prototype.youWin = function() {
-    totalWins++;
-    winner = "Score! " + winners[Math.floor(Math.random() * 3)] + " " + "(" + totalWins + "W" + "/" + totalLosses + "L" + ")";
+    env.totalWins++;
+    var winner = "Score! " + env.winners[Math.floor(Math.random() * 3)] + " " + "(" + env.totalWins + "W" + "/" + env.totalLosses + "L" + ")";
     ctx.fillStyle = "white";
     ctx.fillRect(0, 0, 500, 500);
     ctx.fillStyle = "black";
     ctx.font = "15pt sans-serif";
     ctx.fillText(winner, 10, 35);
     // everytime player wins 2,4,6,8 rounds add another enemy
-    if (totalWins % 2 == 0) {
+    if (env.totalWins % 2 === 0) {
         var helga = new Enemy();
         allEnemies.push(helga);
     }
-    // everytime player wins 3,6,9 rounds add another enemy heart. 
-    if (totalWins % 3 == 0) {
+    // everytime player wins 3,6,9 rounds add another enemy heart.
+    if (env.totalWins % 3 === 0) {
         var hearts = new Enemy();
         hearts.sprite = 'images/Heart.png';
         allEnemies.push(hearts);
     }
     // if player wins 10 rounds they win game and it resets
-    if (totalWins > 9) {
+    if (env.totalWins > 9) {
         alert("You Win!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        winner = "Starting New Game"
         location.reload();
     }
 };
