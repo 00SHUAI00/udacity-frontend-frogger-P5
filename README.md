@@ -24,5 +24,3 @@ every three successfull trips to the bottom of the screen an evil heart will be 
 but now you will have to ward off serious relationships. After 10 successfull trips to the bottom of the screen you are victorious!
 If you are caught 15 times then the game is over, you lose. 2 kids, a dog and a mini-van may be in your future.
 
-
-
